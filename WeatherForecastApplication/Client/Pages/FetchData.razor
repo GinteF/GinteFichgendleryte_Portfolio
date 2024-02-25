@@ -1,0 +1,46 @@
+﻿@page "/fetchdata"
+@using WeatherForecastApplication.Shared
+@inject HttpClient Http
+
+<PageTitle>Weather forecast</PageTitle>
+
+<h1>Weather forecast</h1>
+
+
+@if (forecasts == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>City</th>
+                <th><i class="bi bi-thermometer-sun"></i>Temperature</th>
+                <th><i class="bi bi-cloud-drizzle-fill"></i>Fog Area Fraction</th>
+                <th><i class="bi bi-wind"></i>Wind Speed</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var forecast in forecasts)
+            {
+                <tr>
+                    <td>@forecast.city_name</td>
+                    <td>@($"{forecast.air_temperature} °C")</td>
+                    <td>@($"{forecast.fog_area_fraction} %")</td>
+                    <td>@($"{forecast.wind_speed} m/s")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private WeatherForecastModel[]? forecasts;
+
+    protected override async Task OnInitializedAsync()
+    {
+        forecasts = await Http.GetFromJsonAsync<WeatherForecastModel[]>("WeatherForecast");
+    }
+}
